@@ -1,0 +1,29 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Renovate preset for PowerShell modules that depend on The Code Kitchen packages (PowerCraft.*, CodeCompass.*). Automatically detects version pins in .psd1 RequiredModules and opens PRs when new versions are published to PSGallery.",
+  "regexManagers": [
+    {
+      "fileMatch": ["\\.psd1$"],
+      "matchStrings": [
+        "ModuleName\\s*=\\s*'(?<depName>[^']+)'\\s*;\\s*ModuleVersion\\s*=\\s*'(?<currentValue>[^']+)'"
+      ],
+      "datasourceTemplate": "nuget",
+      "registryUrlTemplate": "https://www.powershellgallery.com/api/v2"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["^PowerCraft\\.", "^CodeCompass\\."],
+      "groupName": "The Code Kitchen modules",
+      "automerge": true,
+      "automergeType": "pr",
+      "matchUpdateTypes": ["patch", "minor"]
+    },
+    {
+      "matchPackagePatterns": ["^PowerCraft\\.", "^CodeCompass\\."],
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["breaking-change"]
+    }
+  ]
+}
