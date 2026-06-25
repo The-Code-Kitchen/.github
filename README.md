@@ -17,6 +17,7 @@ Add this to your `renovate.json`:
 ```
 
 This will:
+
 - Detect version-pinned `RequiredModules` in any `.psd1` file
 - Check PSGallery for newer versions
 - Auto-merge patch and minor updates (after CI passes)
