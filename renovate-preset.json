@@ -1,36 +1,42 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "description": "Renovate preset for PowerShell modules that depend on The Code Kitchen packages (PowerCraft.*, CodeCompass.*). Automatically detects version pins in .psd1 RequiredModules and opens PRs when new versions are published to PSGallery.",
-    "regexManagers": [
+    "description": "For PowerShell modules that depend on The Code Kitchen modules (PowerCraft.*, CodeCompass.*). Reads the versions in RequiredModules of a .psd1 manifest and opens a pull request when the PowerShell Gallery has a newer one.",
+    "customManagers": [
         {
-            "fileMatch": [
-                "\\.psd1$"
+            "customType": "regex",
+            "description": "RequiredModules entries that name a version, looked up on the PowerShell Gallery. The version is read as a plain version, not as a NuGet range: NuGet reads 1.2.0 as 1.2.0 or later, which every newer release satisfies, so nothing would ever be proposed.",
+            "managerFilePatterns": [
+                "/\\.psd1$/"
             ],
             "matchStrings": [
-                "ModuleName\\s*=\\s*'(?<depName>[^']+)'\\s*;\\s*ModuleVersion\\s*=\\s*'(?<currentValue>[^']+)'"
+                "ModuleName\\s*=\\s*['\"](?<depName>[^'\"]+)['\"][^{}]*?(?:ModuleVersion|RequiredVersion)\\s*=\\s*['\"](?<currentValue>[^'\"]+)['\"]",
+                "(?:ModuleVersion|RequiredVersion)\\s*=\\s*['\"](?<currentValue>[^'\"]+)['\"][^{}]*?ModuleName\\s*=\\s*['\"](?<depName>[^'\"]+)['\"]"
             ],
             "datasourceTemplate": "nuget",
-            "registryUrlTemplate": "https://www.powershellgallery.com/api/v2"
+            "registryUrlTemplate": "https://www.powershellgallery.com/api/v2",
+            "versioningTemplate": "loose"
         }
     ],
     "packageRules": [
         {
-            "matchPackagePatterns": [
-                "^PowerCraft\\.",
-                "^CodeCompass\\."
+            "description": "Patch and minor releases of The Code Kitchen modules: one pull request, merged when the checks pass",
+            "matchPackageNames": [
+                "/^PowerCraft\\./",
+                "/^CodeCompass\\./"
             ],
-            "groupName": "The Code Kitchen modules",
-            "automerge": true,
-            "automergeType": "pr",
             "matchUpdateTypes": [
                 "patch",
                 "minor"
-            ]
+            ],
+            "groupName": "The Code Kitchen modules",
+            "automerge": true,
+            "automergeType": "pr"
         },
         {
-            "matchPackagePatterns": [
-                "^PowerCraft\\.",
-                "^CodeCompass\\."
+            "description": "Major releases of The Code Kitchen modules: labelled, and left for a person",
+            "matchPackageNames": [
+                "/^PowerCraft\\./",
+                "/^CodeCompass\\./"
             ],
             "matchUpdateTypes": [
                 "major"

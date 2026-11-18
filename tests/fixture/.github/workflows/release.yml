@@ -1,0 +1,8 @@
+# A fixture for tests/Presets.Tests.ps1. It is not a workflow of this repository.
+name: release
+on: workflow_dispatch
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5

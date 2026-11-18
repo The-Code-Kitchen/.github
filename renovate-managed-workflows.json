@@ -1,0 +1,19 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "description": "For a repository whose workflows are written by CodeCompass. The files CodeCompass writes are updated from its templates, by Update-CCReleaseWorkflow, so Renovate leaves the actions in them alone. A workflow the repository wrote itself is not affected.",
+    "packageRules": [
+        {
+            "description": "Workflow files written by CodeCompass: an action version changes in the template, not in the file",
+            "matchManagers": [
+                "github-actions"
+            ],
+            "matchFileNames": [
+                ".github/workflows/ci.yml",
+                ".github/workflows/release.yml",
+                ".github/workflows/dependency-check.yml",
+                ".github/workflows/workflow-freshness.yml"
+            ],
+            "enabled": false
+        }
+    ]
+}

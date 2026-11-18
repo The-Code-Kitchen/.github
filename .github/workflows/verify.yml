@@ -1,0 +1,32 @@
+name: Verify
+
+# Holds the Renovate presets to what the README says they do, with the Renovate that is current
+# on the day. Renovate renames its options from one version to the next and goes on reading the
+# old names quietly. A preset can be valid and propose nothing. Both happened to this one, so the
+# check runs every week and not only when a preset changes.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Mondays 04:30 UTC.
+    - cron: '30 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  presets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 'lts/*'
+      - name: Run Renovate against the fixture and read what it would propose
+        shell: pwsh
+        run: |
+          $result = Invoke-Pester ./tests -PassThru -Output Detailed
+          if ($result.FailedCount -gt 0 -or $result.PassedCount -eq 0) { exit 1 }
